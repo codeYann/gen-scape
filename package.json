@@ -7,7 +7,7 @@
 		"start": "npx tsx watch src/app.ts",
 		"build": "npx tsup src --format cjs --dts --minify --clean --sourcemap",
 		"format": "npx prettier --write .",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "npx tsx src/http/request.spec.ts"
 	},
 	"keywords": [],
 	"author": "codeYann",
