@@ -10,12 +10,17 @@ export class HttpRequestError extends Error {
 	}
 }
 
+type makeRequestType = {
+	url: string;
+	timeout: number;
+};
+
 export interface IHttpRequest {
-	makeRequest({ url, method, timeout }): Promise<any>;
+	makeRequest({ url, timeout }: makeRequestType): Promise<any>;
 }
 
 export class HttpRequest implements IHttpRequest {
-	private errorTimeout = (reject, urlRequest) =>
+	private errorTimeout = (reject: any, urlRequest: string) =>
 		reject(new HttpRequestError(`Timeout at [${urlRequest}]`));
 
 	private raceTimeoutDelay = (urlRequest: string, timeout: number) =>
@@ -42,9 +47,9 @@ export class HttpRequest implements IHttpRequest {
 		});
 	};
 
-	async makeRequest({ url, method, timeout }): Promise<any> {
+	async makeRequest({ url, timeout }: makeRequestType): Promise<any> {
 		return Promise.race([
-			this[method](url),
+			this.get(url),
 			this.raceTimeoutDelay(url, timeout),
 		]);
 	}
