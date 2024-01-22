@@ -1,26 +1,28 @@
-import { assert } from "console";
-import { it } from "node:test";
+import assert from "node:assert";
+import { describe, it } from "node:test";
 import { HttpRequest, HttpRequestError } from "./request";
 
-it("It should return 200 status", async () => {
-	const request = new HttpRequest();
-	const response = await request.makeRequest({
-		url: "https://stephen-king-api.onrender.com/api/books",
-		method: "get",
-		timeout: 1000,
+describe("Http request error", () => {
+	it("It should return an error", async () => {
+		const request = new HttpRequest();
+		try {
+			await request.makeRequest({
+				url: "http://fake-url.com",
+				timeout: 1,
+			});
+		} catch (error) {
+			assert(error instanceof HttpRequestError);
+		}
 	});
-	assert(response.length === 62);
 });
 
-it("It should return an error", async () => {
-	const request = new HttpRequest();
-	try {
-		await request.makeRequest({
-			url: "http://fake-url.com",
-			method: "get",
-			timeout: 1,
+describe("Http request to an endpoint", () => {
+	it("It should return 200 status", async () => {
+		const request = new HttpRequest();
+		const response = await request.makeRequest({
+			url: "https://stephen-king-api.onrender.com/api/books",
+			timeout: 1000,
 		});
-	} catch (error) {
-		assert(error instanceof HttpRequestError);
-	}
+		assert.equal(response.length, 62);
+	});
 });
