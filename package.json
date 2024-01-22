@@ -1,0 +1,22 @@
+{
+	"name": "gen-scape",
+	"version": "1.0.0",
+	"description": "A project to apply iterators and generators knowlegde.",
+	"main": "src/app.ts",
+	"scripts": {
+		"start": "npx tsx watch src/app.ts",
+		"build": "npx tsup src --format cjs --dts --minify --clean --sourcemap",
+		"format": "npx prettier --write .",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "codeYann",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "20.11.5",
+		"prettier": "^3.2.4",
+		"tsup": "8.0.1",
+		"tsx": "4.7.0",
+		"typescript": "5.3.3"
+	}
+}
