@@ -24,7 +24,10 @@ export interface IPagination {
 	retryTimeout: number;
 	maxRequestTimeout: number;
 	threshold: number;
-	getPaginated({ url, page }: getPaginatedType): Promise<any>;
+	getPaginated({
+		url,
+		page,
+	}: getPaginatedType): AsyncGenerator<any, any, unknown>;
 	handleRequest({ url, page, retries }: handleRequestType): Promise<any>;
 }
 
@@ -53,7 +56,7 @@ export class Pagination implements IPagination {
 		retries = 1,
 	}: handleRequestType): Promise<any> {
 		try {
-			const finalURL = new URL("/", url);
+			const finalURL = new URL("", url);
 			finalURL.searchParams.set("tid", page.toString());
 
 			const result = await this.request.makeRequest({
@@ -69,12 +72,22 @@ export class Pagination implements IPagination {
 			}
 
 			await Pagination.sleep(this.retryTimeout);
-			return this.handleRequest({ url, page, retries: retries + 1 });
+			return this.handleRequest({ url, page, retries: (retries += 1) });
 		}
 	}
 
-	async getPaginated({ url, page }: getPaginatedType): Promise<any> {
-		console.log(url, page);
-		return;
+	async *getPaginated({
+		url,
+		page,
+	}: getPaginatedType): AsyncGenerator<any, any, unknown> {
+		const result = await this.handleRequest({ url, page, retries: 1 });
+		const lastId = result[result.length - 1]?.tid ?? 0;
+		if (lastId === 0) {
+			return;
+		}
+
+		yield result;
+		await Pagination.sleep(this.threshold);
+		yield* this.getPaginated({ url, page: lastId });
 	}
 }
