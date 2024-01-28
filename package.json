@@ -7,7 +7,8 @@
 		"start": "npx tsx watch src/app.ts",
 		"build": "npx tsup src --format cjs --dts --minify --clean --sourcemap",
 		"format": "npx prettier --write .",
-		"test": "npx tsx src/**/*.spec.ts"
+		"test": "npx tsx src/**/*.spec.ts",
+		"test:pagination": "npx tsx src/pagination/pagination.spec.ts"
 	},
 	"keywords": [],
 	"author": "codeYann",
