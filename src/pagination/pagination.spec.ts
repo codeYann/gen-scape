@@ -121,24 +121,23 @@ describe("Pagination tests", () => {
 				.resolves([]);
 
 			sandbox.spy(pagination, "getPaginated");
-			const data = {
-				url: "https://google.com.br",
-				page: 1,
-			};
 
-			const secondCallExpectation = {
-				...data,
-				page: responseMock[0]?.tid ?? 0,
-			};
+			// const data = {
+			// 	url: "https://google.com.br",
+			// 	page: 1,
+			// };
 
-			const thirdCallExpectation = {
-				...secondCallExpectation,
-				page: responseMock[1]?.tid ?? 0,
-			};
+			// const secondCallExpectation = {
+			// 	...data,
+			// 	page: responseMock[0]?.tid ?? 0,
+			// };
+
+			// const thirdCallExpectation = {
+			// 	...secondCallExpectation,
+			// 	page: responseMock[1]?.tid ?? 0,
+			// };
 
 			// const getFirstArgFromCall = (value: number) => pagination.handleRequest.getCall
 		});
-
-		it("should stop requesting when request returns an empty arrey", async () => {});
 	});
 });
