@@ -1,4 +1,4 @@
-import https from "https";
+import https from "node:https";
 
 export class HttpRequestError extends Error {
 	statusCode?: number;
@@ -16,7 +16,7 @@ type makeRequestType = {
 };
 
 export interface IHttpRequest {
-	makeRequest({ url, timeout }: makeRequestType): Promise<any>;
+	makeRequest({ url, timeout }: makeRequestType): Promise<unknown>;
 }
 
 export class HttpRequest implements IHttpRequest {
@@ -28,29 +28,21 @@ export class HttpRequest implements IHttpRequest {
 			setTimeout(() => this.errorTimeout(reject, urlRequest), timeout),
 		);
 
-	private get = (url: string): Promise<any> => {
+	private get = (url: string): Promise<unknown> => {
 		return new Promise((resolve, reject) => {
 			https.get(url, (response) => {
-				const items: any[] = [];
+				const items: unknown[] = [];
 				response
 					.on("data", (data) => items.push(data))
 					.on("end", () => resolve(JSON.parse(items.join(""))))
 					.on("error", (error) =>
-						reject(
-							new HttpRequestError(
-								error.message,
-								response.statusCode,
-							),
-						),
+						reject(new HttpRequestError(error.message, response.statusCode)),
 					);
 			});
 		});
 	};
 
-	async makeRequest({ url, timeout }: makeRequestType): Promise<any> {
-		return Promise.race([
-			this.get(url),
-			this.raceTimeoutDelay(url, timeout),
-		]);
+	async makeRequest({ url, timeout }: makeRequestType): Promise<unknown> {
+		return Promise.race([this.get(url), this.raceTimeoutDelay(url, timeout)]);
 	}
 }
