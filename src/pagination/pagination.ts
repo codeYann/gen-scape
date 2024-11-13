@@ -4,7 +4,7 @@ const DEFAULT_OPTIONS_ENUM = {
 	maxRetries: 4,
 	retryTimeout: 1000,
 	maxRequestTimeout: 1000,
-	threshold: 200,
+	threshold: 1200,
 };
 
 type getPaginatedType = {
@@ -27,8 +27,8 @@ export interface IPagination {
 	getPaginated({
 		url,
 		page,
-	}: getPaginatedType): AsyncGenerator<any, any, unknown>;
-	handleRequest({ url, page, retries }: handleRequestType): Promise<any>;
+	}: getPaginatedType): AsyncGenerator<unknown, unknown, unknown>;
+	handleRequest({ url, page, retries }: handleRequestType): Promise<unknown>;
 }
 
 export class Pagination implements IPagination {
@@ -43,7 +43,7 @@ export class Pagination implements IPagination {
 		this.maxRetries = options.maxRetries;
 		this.retryTimeout = options.retryTimeout;
 		this.maxRequestTimeout = 1000;
-		this.threshold = 200;
+		this.threshold = 1200;
 	}
 
 	static sleep(ms: number): Promise<void> {
@@ -54,7 +54,7 @@ export class Pagination implements IPagination {
 		url,
 		page,
 		retries = 1,
-	}: handleRequestType): Promise<any> {
+	}: handleRequestType): Promise<unknown> {
 		try {
 			const finalURL = new URL("", url);
 			finalURL.searchParams.set("tid", page.toString());
@@ -79,7 +79,7 @@ export class Pagination implements IPagination {
 	async *getPaginated({
 		url,
 		page,
-	}: getPaginatedType): AsyncGenerator<any, any, unknown> {
+	}: getPaginatedType): AsyncGenerator<unknown, unknown, unknown> {
 		const result = await this.handleRequest({ url, page, retries: 1 });
 		const lastId = result[result.length - 1]?.tid ?? 0;
 		if (lastId === 0) {
